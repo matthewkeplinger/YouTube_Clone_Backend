@@ -19,10 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 5b3434598abc6806e656a429e2f78f10e799a25c
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
