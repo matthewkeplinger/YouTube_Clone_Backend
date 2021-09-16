@@ -44,34 +44,38 @@ class CommentDetail(APIView):
 class CommentLike(APIView):
         def get_object(self, pk):
             try:
-                return Comment.objects.filter(pk = pk)
+                return Comment.objects.get(pk = pk)
             except Comment.DoesNotExist:
                 raise Http404
 
         def get(self, request, pk):
             comment = self.get_object(pk)
-            # comment[0].likes += 1
-            data = {"likes": comment[0].likes + int(1)}
-            serializer = CommentSerializer(comment, data = request.data)
+            serializer = CommentSerializer(comment, data=request.data)
+            return Response(serializer.data)
+
+        def patch(self, request, pk):
+            comment = self.get_object(pk)
+            data = {"likes": comment.likes + int(1)}
+            serializer = CommentSerializer(comment, data=data, partial = True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDislike(APIView):
-        def get_object(self, id):
+        def get_object(self, pk):
             try:
-                return Comment.objects.filter(id = id)
+                return Comment.objects.get(pk = pk)
             except Comment.DoesNotExist:
                 raise Http404
 
-        def get(self, request, id):
-            comment = self.get_object(id)
+        def get(self, request, pk):
+            comment = self.get_object(pk)
             serializer = CommentSerializer(comment, data=request.data)
             return Response(serializer.data)
 
-        def patch(self, request, id):
-            comment = self.get_object(id)
+        def patch(self, request, pk):
+            comment = self.get_object(pk)
             data = {"dislikes": comment.dislikes + int(1)}
             serializer = CommentSerializer(comment, data=data, partial = True)
             if serializer.is_valid():
