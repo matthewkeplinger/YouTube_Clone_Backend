@@ -52,7 +52,7 @@ class CommentLike(APIView):
             comment = self.get_object(pk)
             # comment[0].likes += 1
             data = {"likes": comment[0].likes + int(1)}
-            serializer = CommentSerializer(comment, data = data)
+            serializer = CommentSerializer(comment, data = request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
