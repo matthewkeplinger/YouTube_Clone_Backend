@@ -30,8 +30,9 @@ class CommentDetail(APIView):
             raise Http404
 
     def get(self, request, video_id):
-        comment = self.get_object(video_id)
+        comment = self.get_object(video_id = video_id)
         serializer = CommentSerializer(comment, data=request.data)
+        serializer.is_valid()
         return Response(serializer.data)
 
     def delete(self, request, video_id):
