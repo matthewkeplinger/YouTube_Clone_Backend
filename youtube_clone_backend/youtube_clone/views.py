@@ -30,9 +30,9 @@ class CommentDetail(APIView):
             raise Http404
 
     def get(self, request, video_id):
-        comment = self.get_object(video_id = video_id)
-        serializer = CommentSerializer(comment, data=request.data)
-        serializer.is_valid()
+        print(video_id)
+        comment = Comment.objects.filter(video_id = video_id)
+        serializer = CommentSerializer(comment, many=True)
         return Response(serializer.data)
 
     def delete(self, request, video_id):
@@ -49,17 +49,13 @@ class CommentLike(APIView):
 
         def get(self, request, pk):
             comment = self.get_object(pk)
+            comment[0].likes += 1
+            if comment.is_valid():
+                comment.save()
             serializer = CommentSerializer(comment, data=request.data)
+            
             return Response(serializer.data)
 
-        def patch(self, request, pk):
-            comment = self.get_object(pk)
-            comment.likes += 1
-            serializer = CommentSerializer(comment, data=request.data, partial = True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDislike(APIView):
         def get_object(self, id):
