@@ -35,8 +35,8 @@ class CommentDetail(APIView):
         serializer = CommentSerializer(comment, many=True)
         return Response(serializer.data)
 
-    def delete(self, request, video_id):
-        comment = self.get_object(video_id)
+    def delete(self, request, pk):
+        comment = Comment.objects.filter(pk = pk)
         comment.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
 
@@ -50,9 +50,10 @@ class CommentLike(APIView):
         def get(self, request, pk):
             comment = self.get_object(pk)
             comment[0].likes += 1
-            if comment.is_valid():
-                comment.save()
-            serializer = CommentSerializer(comment, data=request.data)
+            # if comment.is_valid():
+            comment[0].save()
+            serializer = CommentSerializer(comment, many=True)
+            serializer.is_valid()
             
             return Response(serializer.data)
 
