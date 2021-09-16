@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from django.http import Http404
 
 
+
 # Create your views here.
 class CommentList(APIView):
     def get(self, request):
@@ -49,14 +50,13 @@ class CommentLike(APIView):
 
         def get(self, request, pk):
             comment = self.get_object(pk)
-            comment[0].likes += 1
-            # if comment.is_valid():
-            comment[0].save()
-            serializer = CommentSerializer(comment, many=True)
-            serializer.is_valid()
-            
-            return Response(serializer.data)
-
+            # comment[0].likes += 1
+            data = {"likes": comment[0].likes + int(1)}
+            serializer = CommentSerializer(comment, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDislike(APIView):
         def get_object(self, id):
